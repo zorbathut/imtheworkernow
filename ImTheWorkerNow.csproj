@@ -78,6 +78,7 @@
     <Compile Include="Bootstrap.cs" />
     <Compile Include="Building_CommsConsole_Detour.cs" />
     <Compile Include="Detours.cs" />
+    <Compile Include="FloatMenuMakerMap_Detour.cs" />
     <Compile Include="ITWNCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />

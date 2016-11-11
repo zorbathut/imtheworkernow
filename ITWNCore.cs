@@ -16,9 +16,14 @@ namespace ImTheWorkerNow
         public static void PostMenuOption(
             List<FloatMenuOption> list,
             Pawn pawn,
-            Building target,
+            Thing target,
             string title,
-            Action action)
+            Action action,
+            MenuOptionPriority priority = MenuOptionPriority.Medium,
+            Action mouseoverGuiAction = null,
+            Thing revalidateClickTarget = null,
+            float extraPartWidth = 0,
+            Func<Rect, bool> extraPartOnGUI = null)
         {
             Action handler = action;
             if (!pawn.CanReserve(target, 1))
@@ -36,7 +41,7 @@ namespace ImTheWorkerNow
                 };
             }
 
-            list.Add(new FloatMenuOption(title, handler, MenuOptionPriority.Medium, null, null, 0f, null));
+            list.Add(new FloatMenuOption(title, handler, priority, mouseoverGuiAction, revalidateClickTarget, extraPartWidth, extraPartOnGUI));
         }
     }
 }
