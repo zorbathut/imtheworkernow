@@ -25,6 +25,8 @@ namespace ImTheWorkerNow
             float extraPartWidth = 0,
             Func<Rect, bool> extraPartOnGUI = null)
         {
+            Log.Message(title);
+
             Action handler = action;
             if (!pawn.CanReserve(target, 1))
             {
@@ -35,13 +37,35 @@ namespace ImTheWorkerNow
                     Pawn currentReserver = Find.Reservations.FirstReserverOf(target, pawn.Faction, true);
                     if (currentReserver != null && currentReserver.jobs != null)
                     {
-                        currentReserver.jobs.EndCurrentJob(JobCondition.InterruptForced);
+                        try
+                        {
+                            ITWN.HorrifyingGlobalFakeryToPreventReserve = target;
+                            currentReserver.jobs.EndCurrentJob(JobCondition.InterruptForced);
+                        }
+                        finally
+                        {
+                            ITWN.HorrifyingGlobalFakeryToPreventReserve = null;
+                        }
                     }
-                    action();
+                    Pawn newReserver = Find.Reservations.FirstReserverOf(target, pawn.Faction, true);
+                    if (newReserver != null)
+                    {
+                        Log.Error(string.Format("Something went wrong, {0}/{1}/{2} is the job history, please let the developer of I'm The Worker Now know!", currentReserver, newReserver, pawn));
+                    }
+                    else
+                    {
+                        action();
+                    }
                 };
             }
 
-            list.Add(new FloatMenuOption(title, handler, priority, mouseoverGuiAction, revalidateClickTarget, extraPartWidth, extraPartOnGUI));
+            if (!list.Any((FloatMenuOption op) => op.Label == title.TrimEnd(new char[0])))
+            {
+                list.Add(new FloatMenuOption(title, handler, priority, mouseoverGuiAction, revalidateClickTarget, extraPartWidth, extraPartOnGUI));
+            }
         }
+
+        public static Thing HorrifyingGlobalFakeryToAllowReserve = null;
+        public static Thing HorrifyingGlobalFakeryToPreventReserve = null;
     }
 }

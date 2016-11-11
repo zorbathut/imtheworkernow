@@ -31,6 +31,36 @@ namespace ImTheWorkerNow
                         return;
                     }
                 }
+
+                {
+                    MethodInfo method1 = typeof(RimWorld.FloatMenuMakerMap).GetMethod("AddHumanlikeOrders", BindingFlags.Static | BindingFlags.NonPublic);
+                    MethodInfo method2 = typeof(FloatMenuMakerMap_Detour).GetMethod("AddHumanlikeOrders", BindingFlags.Static | BindingFlags.Public);
+                    if (!Detours.TryDetourFromTo(method1, method2))
+                    {
+                        Log.Error("EVERYTHING IS BROKEN 3");
+                        return;
+                    }
+                }
+
+                {
+                    MethodInfo method1 = typeof(RimWorld.FloatMenuMakerMap).GetMethod("AddUndraftedOrders", BindingFlags.Static | BindingFlags.NonPublic);
+                    MethodInfo method2 = typeof(FloatMenuMakerMap_Detour).GetMethod("AddUndraftedOrders", BindingFlags.Static | BindingFlags.Public);
+                    if (!Detours.TryDetourFromTo(method1, method2))
+                    {
+                        Log.Error("EVERYTHING IS BROKEN 4");
+                        return;
+                    }
+                }
+
+                {
+                    MethodInfo method1 = typeof(Verse.AI.ReservationUtility).GetMethod("CanReserve", BindingFlags.Static | BindingFlags.Public);
+                    MethodInfo method2 = typeof(ReservationUtility_Detour).GetMethod("CanReserve", BindingFlags.Static | BindingFlags.Public);
+                    if (!Detours.TryDetourFromTo(method1, method2))
+                    {
+                        Log.Error("EVERYTHING IS BROKEN 5");
+                        return;
+                    }
+                }
             }
             catch (Exception)
             {
