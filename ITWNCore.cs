@@ -25,8 +25,6 @@ namespace ImTheWorkerNow
             float extraPartWidth = 0,
             Func<Rect, bool> extraPartOnGUI = null)
         {
-            Log.Message(title);
-
             Action handler = action;
             if (!pawn.CanReserve(target, 1))
             {

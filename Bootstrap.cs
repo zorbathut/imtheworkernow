@@ -61,6 +61,16 @@ namespace ImTheWorkerNow
                         return;
                     }
                 }
+
+                {
+                    MethodInfo method1 = typeof(Verse.AI.ReservationUtility).GetMethod("CanReserveAndReach", BindingFlags.Static | BindingFlags.Public);
+                    MethodInfo method2 = typeof(ReservationUtility_Detour).GetMethod("CanReserveAndReach", BindingFlags.Static | BindingFlags.Public);
+                    if (!Detours.TryDetourFromTo(method1, method2))
+                    {
+                        Log.Error("EVERYTHING IS BROKEN 6");
+                        return;
+                    }
+                }
             }
             catch (Exception)
             {

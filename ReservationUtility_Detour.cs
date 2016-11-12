@@ -25,5 +25,10 @@ namespace ImTheWorkerNow
             }
             return Find.Reservations.CanReserve(p, target, maxPawns);
         }
+
+        public static bool CanReserveAndReach(this Pawn p, TargetInfo target, PathEndMode peMode, Danger maxDanger, int maxPawns = 1)
+        {
+            return p.CanReach(target, peMode, maxDanger, false, TraverseMode.ByPawn) && CanReserve(p, target, maxPawns);
+        }
     }
 }
