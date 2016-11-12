@@ -206,12 +206,12 @@ namespace ImTheWorkerNow
                 foreach (TargetInfo current2 in GenUI.TargetsAt(clickPos, TargetingParameters.ForRescue(pawn), true))
                 {
                     Pawn victim = (Pawn)current2.Thing;
-                    if (!victim.InBed() && pawn.CanReserveAndReach(victim, PathEndMode.OnCell, Danger.Deadly, 1))
+                    if (!victim.InBed() && pawn.CanReach(victim, PathEndMode.OnCell, Danger.Deadly))
                     {
                         if ((victim.Faction == Faction.OfPlayer && victim.MentalStateDef == null) || (victim.Faction != Faction.OfPlayer && victim.MentalStateDef == null && !victim.IsPrisonerOfColony && (victim.Faction == null || !victim.Faction.HostileTo(Faction.OfPlayer))))
                         {
                             Pawn victim2 = victim;
-                            opts.Add(new FloatMenuOption("Rescue".Translate(new object[]
+                            ITWN.PostMenuOption(opts, pawn, victim2, "Rescue".Translate(new object[]
                             {
                                 victim.LabelCap
                             }), delegate
@@ -236,12 +236,12 @@ namespace ImTheWorkerNow
                                 job.playerForced = true;
                                 pawn.drafter.TakeOrderedJob(job);
                                 PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.Rescuing, KnowledgeAmount.Total);
-                            }, MenuOptionPriority.Medium, null, victim2, 0f, null));
+                            }, MenuOptionPriority.Medium, null, victim2, 0f, null);
                         }
                         if (victim.MentalStateDef != null || (victim.RaceProps.Humanlike && victim.Faction != Faction.OfPlayer))
                         {
                             Pawn victim2 = victim;
-                            opts.Add(new FloatMenuOption("Capture".Translate(new object[]
+                            ITWN.PostMenuOption(opts, pawn, victim2, "Capture".Translate(new object[]
                             {
                                 victim.LabelCap
                             }), delegate
@@ -257,7 +257,7 @@ namespace ImTheWorkerNow
                                 job.playerForced = true;
                                 pawn.drafter.TakeOrderedJob(job);
                                 PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.Capturing, KnowledgeAmount.Total);
-                            }, MenuOptionPriority.Medium, null, victim2, 0f, null));
+                            }, MenuOptionPriority.Medium, null, victim2, 0f, null);
                         }
                     }
                 }
@@ -265,7 +265,7 @@ namespace ImTheWorkerNow
                 {
                     TargetInfo targetInfo = current3;
                     Pawn victim = (Pawn)targetInfo.Thing;
-                    if (victim.Downed && pawn.CanReserveAndReach(victim, PathEndMode.OnCell, Danger.Deadly, 1) && Building_CryptosleepCasket.FindCryptosleepCasketFor(victim, pawn) != null)
+                    if (victim.Downed && pawn.CanReach(victim, PathEndMode.OnCell, Danger.Deadly) && Building_CryptosleepCasket.FindCryptosleepCasketFor(victim, pawn) != null)
                     {
                         string label = "CarryToCryptosleepCasket".Translate(new object[]
                         {
@@ -286,7 +286,7 @@ namespace ImTheWorkerNow
                             pawn.drafter.TakeOrderedJob(job);
                         };
                         Pawn victim2 = victim;
-                        opts.Add(new FloatMenuOption(label, action, MenuOptionPriority.Medium, null, victim2, 0f, null));
+                        ITWN.PostMenuOption(opts, pawn, victim2, label, action, MenuOptionPriority.Medium, null, victim2, 0f, null);
                     }
                 }
             }
