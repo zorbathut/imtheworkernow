@@ -23,10 +23,11 @@ namespace ImTheWorkerNow
             Action mouseoverGuiAction = null,
             Thing revalidateClickTarget = null,
             float extraPartWidth = 0,
-            Func<Rect, bool> extraPartOnGUI = null)
+            Func<Rect, bool> extraPartOnGUI = null,
+            WorkTypeDef workType = null)
         {
             Action handler = action;
-            if (!pawn.CanReserve(target, 1))
+            if (action != null && !pawn.CanReserve(target, 1))
             {
                 Pawn reserver = Find.Reservations.FirstReserverOf(target, pawn.Faction, true);
                 title = title + " (" + "ReservedBy".Translate(new object[] { reserver.LabelShort }) + ")";
@@ -55,6 +56,11 @@ namespace ImTheWorkerNow
                         action();
                     }
                 };
+            }
+
+            if (workType != null && pawn.workSettings.GetPriority(workType) == 0)
+            {
+                title += string.Format(" (not assigned to {0})", workType.gerundLabel);
             }
 
             if (!list.Any((FloatMenuOption op) => op.Label == title.TrimEnd(new char[0])))

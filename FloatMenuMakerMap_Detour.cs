@@ -599,30 +599,12 @@ namespace ImTheWorkerNow
                                                 current2.LabelShort
                                             });
                                         }
-                                        else if (pawn.workSettings.GetPriority(workType) == 0)
+                                        else if (pawn.story.WorkTypeIsDisabled(workType))
                                         {
-                                            if (pawn.story.WorkTypeIsDisabled(workType))
+                                            label = "CannotPrioritizeWorkTypeDisabled".Translate(new object[]
                                             {
-                                                label = "CannotPrioritizeWorkTypeDisabled".Translate(new object[]
-                                                {
-                                                    workType.gerundLabel
-                                                });
-                                            }
-                                            else if ("CannotPrioritizeNotAssignedToWorkType".CanTranslate())
-                                            {
-                                                label = "CannotPrioritizeNotAssignedToWorkType".Translate(new object[]
-                                                {
-                                                    workType.gerundLabel
-                                                });
-                                            }
-                                            else
-                                            {
-                                                label = "CannotPrioritizeIsNotA".Translate(new object[]
-                                                {
-                                                    pawn.NameStringShort,
-                                                    workType.pawnLabel
-                                                });
-                                            }
+                                                workType.gerundLabel
+                                            });
                                         }
                                         else if (job.def == JobDefOf.Research && current2 is Building_ResearchBench)
                                         {
@@ -663,7 +645,7 @@ namespace ImTheWorkerNow
                                                 pawn.thinker.GetMainTreeThinkNode<JobGiver_Work>().TryStartPrioritizedWorkOn(pawn, localJob, localScanner, clickCell);
                                             };
                                         }
-                                        ITWN.PostMenuOption(opts, pawn, current2, label, action);
+                                        ITWN.PostMenuOption(opts, pawn, current2, label, action, workType: workType);
                                     }
                                 }
                             }
@@ -735,30 +717,12 @@ namespace ImTheWorkerNow
                                                 "AreaLower".Translate()
                                             });
                                         }
-                                        else if (pawn.workSettings.GetPriority(workType2) == 0)
+                                        else if (pawn.story.WorkTypeIsDisabled(workType2))
                                         {
-                                            if (pawn.story.WorkTypeIsDisabled(workType2))
+                                            label = "CannotPrioritizeWorkTypeDisabled".Translate(new object[]
                                             {
-                                                label = "CannotPrioritizeWorkTypeDisabled".Translate(new object[]
-                                                {
-                                                    workType2.gerundLabel
-                                                });
-                                            }
-                                            else if ("CannotPrioritizeNotAssignedToWorkType".CanTranslate())
-                                            {
-                                                label = "CannotPrioritizeNotAssignedToWorkType".Translate(new object[]
-                                                {
-                                                    workType2.gerundLabel
-                                                });
-                                            }
-                                            else
-                                            {
-                                                label = "CannotPrioritizeIsNotA".Translate(new object[]
-                                                {
-                                                    pawn.NameStringShort,
-                                                    workType2.pawnLabel
-                                                });
-                                            }
+                                                workType2.gerundLabel
+                                            });
                                         }
                                         else if (!pawn.CanReach(clickCell, PathEndMode.Touch, Danger.Deadly, false, TraverseMode.ByPawn))
                                         {
@@ -778,10 +742,7 @@ namespace ImTheWorkerNow
                                                 pawn.thinker.GetMainTreeThinkNode<JobGiver_Work>().TryStartPrioritizedWorkOn(pawn, localJob, localScanner, clickCell);
                                             };
                                         }
-                                        if (!opts.Any((FloatMenuOption op) => op.Label == label.TrimEnd(new char[0])))
-                                        {
-                                            opts.Add(new FloatMenuOption(label, action2, MenuOptionPriority.Medium, null, null, 0f, null));
-                                        }
+                                        ITWN.PostMenuOption(opts, pawn, null, label, action2, workType: workType2);
                                     }
                                 }
                             }
