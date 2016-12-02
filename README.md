@@ -57,7 +57,7 @@ Rimworld "Look At Me, I'm The Worker Now" mod
 
 Chef is hiding in his room.
 
-The final straw was: they're all jerks >:(
+The final straw was: Talked to fellow colonists
 
 ----
 
