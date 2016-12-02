@@ -19,7 +19,7 @@ Rimworld "Look At Me, I'm The Worker Now" mod
 
 "DON'T TEND THE PRISONER."
 
-"WHAT? I CAN'T HEAR YOU. I'M BY THE GENERATORS."
+"WHAT? I CAN'T HEAR YA. I'M BY THE GENERATORS."
 
 "DON'T. TEND. THE. PRISONER."
 
@@ -37,7 +37,7 @@ Rimworld "Look At Me, I'm The Worker Now" mod
 
 "I'm not a doctor."
 
-"Okay. Alright. Emu. You're a doctor now."
+"Okay. Alright. Emu? You're a doctor now."
 
 "Cool."
 
