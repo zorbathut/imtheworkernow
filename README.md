@@ -77,4 +77,4 @@ This won't let you assign jobs if the pawn is incapable of that work - it's mean
 
 Does not require a new save game - this can be transparently added and removed from any savegame you already have.
 
--- Visit https://ludeon.com/forums/index.php?topic=26623.msg269333#msg269333 for more info and other mods --
+-- Visit https://ludeon.com/forums/index.php?topic=26623.msg269335#msg269335 for more info and other mods --
