@@ -13,7 +13,7 @@ namespace ImTheWorkerNow
 {
     public static class ReservationUtility_Detour
     {
-        public static bool CanReserve(this Pawn p, TargetInfo target, int maxPawns = 1)
+        public static bool CanReserve(this Pawn p, LocalTargetInfo target, int maxPawns = 1)
         {
             if (ITWN.HorrifyingGlobalFakeryToAllowReserve != null && target.Thing == ITWN.HorrifyingGlobalFakeryToAllowReserve)
             {
@@ -23,10 +23,10 @@ namespace ImTheWorkerNow
             {
                 return false;
             }
-            return Find.Reservations.CanReserve(p, target, maxPawns);
+            return p.Map.reservationManager.CanReserve(p, target, maxPawns);
         }
 
-        public static bool CanReserveAndReach(this Pawn p, TargetInfo target, PathEndMode peMode, Danger maxDanger, int maxPawns = 1)
+        public static bool CanReserveAndReach(this Pawn p, LocalTargetInfo target, PathEndMode peMode, Danger maxDanger, int maxPawns = 1)
         {
             return p.CanReach(target, peMode, maxDanger, false, TraverseMode.ByPawn) && CanReserve(p, target, maxPawns);
         }

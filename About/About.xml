@@ -4,5 +4,5 @@
   <author>ZorbaTHut</author>
   <url>https://github.com/zorbathut/imtheworkernow</url>
   <description>Forcing jobs on pawns now cancels that job on other pawns.</description>
-  <targetVersion>0.15.0</targetVersion>
+  <targetVersion>0.16.0</targetVersion>
 </ModMetaData>

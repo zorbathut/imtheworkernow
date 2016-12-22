@@ -17,7 +17,7 @@ namespace ImTheWorkerNow
         {
             /*if (!myPawn.CanReserve(building, 1))
             {
-                FloatMenuOption item = new FloatMenuOption("CannotUseReserved".Translate(), null, MenuOptionPriority.Medium, null, null, 0f, null);
+                FloatMenuOption item = new FloatMenuOption("CannotUseReserved".Translate(), null, MenuOptionPriority.Default, null, null, 0f, null);
                 return new List<FloatMenuOption>
                 {
                     item
@@ -25,15 +25,15 @@ namespace ImTheWorkerNow
             }*/
             if (!myPawn.CanReach(building, PathEndMode.InteractionCell, Danger.Some, false, TraverseMode.ByPawn))
             {
-                FloatMenuOption item2 = new FloatMenuOption("CannotUseNoPath".Translate(), null, MenuOptionPriority.Medium, null, null, 0f, null);
+                FloatMenuOption item2 = new FloatMenuOption("CannotUseNoPath".Translate(), null, MenuOptionPriority.Default, null, null, 0f, null);
                 return new List<FloatMenuOption>
                 {
                     item2
                 };
             }
-            if (Find.MapConditionManager.ConditionIsActive(MapConditionDefOf.SolarFlare))
+            if (building.Map.mapConditionManager.ConditionIsActive(MapConditionDefOf.SolarFlare))
             {
-                FloatMenuOption item3 = new FloatMenuOption("CannotUseSolarFlare".Translate(), null, MenuOptionPriority.Medium, null, null, 0f, null);
+                FloatMenuOption item3 = new FloatMenuOption("CannotUseSolarFlare".Translate(), null, MenuOptionPriority.Default, null, null, 0f, null);
                 return new List<FloatMenuOption>
                 {
                     item3
@@ -41,7 +41,7 @@ namespace ImTheWorkerNow
             }
             if (!building.GetFieldViaReflection<CompPowerTrader>("powerComp").PowerOn)
             {
-                FloatMenuOption item4 = new FloatMenuOption("CannotUseNoPower".Translate(), null, MenuOptionPriority.Medium, null, null, 0f, null);
+                FloatMenuOption item4 = new FloatMenuOption("CannotUseNoPower".Translate(), null, MenuOptionPriority.Default, null, null, 0f, null);
                 return new List<FloatMenuOption>
                 {
                     item4
@@ -55,7 +55,7 @@ namespace ImTheWorkerNow
                     {
                         PawnCapacityDefOf.Talking.label
                     })
-                }), null, MenuOptionPriority.Medium, null, null, 0f, null);
+                }), null, MenuOptionPriority.Default, null, null, 0f, null);
                 return new List<FloatMenuOption>
                 {
                     item5
@@ -64,40 +64,55 @@ namespace ImTheWorkerNow
             if (!building.CanUseCommsNow)
             {
                 Log.Error(myPawn + " could not use comm console for unknown reason.");
-                FloatMenuOption item6 = new FloatMenuOption("Cannot use now", null, MenuOptionPriority.Medium, null, null, 0f, null);
+                FloatMenuOption item6 = new FloatMenuOption("Cannot use now", null, MenuOptionPriority.Default, null, null, 0f, null);
                 return new List<FloatMenuOption>
                 {
                     item6
                 };
             }
-            IEnumerable<ICommunicable> enumerable = Find.PassingShipManager.passingShips.Cast<ICommunicable>().Concat(Find.FactionManager.AllFactionsInViewOrder.Cast<ICommunicable>());
+            IEnumerable<ICommunicable> enumerable = myPawn.Map.passingShipManager.passingShips.Cast<ICommunicable>().Concat(Find.FactionManager.AllFactionsInViewOrder.Cast<ICommunicable>());
             List<FloatMenuOption> list = new List<FloatMenuOption>();
             foreach (ICommunicable commTarget in enumerable)
             {
-                Faction faction = commTarget as Faction;
-                if (faction == null || !faction.IsPlayer)
+                ICommunicable localCommTarget = commTarget;
+                string text = "CallOnRadio".Translate(new object[]
                 {
-                    ICommunicable localCommTarget = commTarget;
-                    Action action = delegate
+                    localCommTarget.GetCallLabel()
+                });
+                Faction faction = localCommTarget as Faction;
+                if (faction != null)
+                {
+                    if (faction.IsPlayer)
                     {
-                        if (commTarget is TradeShip && !Building_OrbitalTradeBeacon.AllPowered().Any<Building_OrbitalTradeBeacon>())
+                        continue;
+                    }
+                    if (!Building_CommsConsole.LeaderIsAvailableToTalk(faction))
+                    {
+                        list.Add(new FloatMenuOption(text + " (" + "LeaderUnavailable".Translate(new object[]
                         {
-                            Messages.Message("MessageNeedBeaconToTradeWithShip".Translate(), building, MessageSound.RejectInput);
-                            return;
-                        }
-                        Job job = new Job(JobDefOf.UseCommsConsole, building);
-                        job.commTarget = localCommTarget;
-                        myPawn.drafter.TakeOrderedJob(job);
-                        PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.OpeningComms, KnowledgeAmount.Total);
-                    };
-                    ITWN.PostMenuOption(list,
-                        myPawn,
-                        building,
-                        "CallOnRadio".Translate(new object[]
-                        {
-                            localCommTarget.GetCallLabel()
-                        }), action);
+                    faction.leader.LabelShort
+                        }) + ")", null, MenuOptionPriority.Default, null, null, 0f, null, null));
+                        continue;
+                    }
                 }
+                Action action = delegate
+                {
+                    if (commTarget is TradeShip && !Building_OrbitalTradeBeacon.AllPowered(building.Map).Any<Building_OrbitalTradeBeacon>())
+                    {
+                        Messages.Message("MessageNeedBeaconToTradeWithShip".Translate(), building, MessageSound.RejectInput);
+                        return;
+                    }
+                    Job job = new Job(JobDefOf.UseCommsConsole, building);
+                    job.commTarget = localCommTarget;
+                    myPawn.jobs.TryTakeOrderedJob(job);
+                    PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.OpeningComms, KnowledgeAmount.Total);
+                };
+                ITWN.PostMenuOption(list,
+                    myPawn,
+                    building,
+                    text,
+                    action,
+                    priority: MenuOptionPriority.InitiateSocial);
             }
             return list;
         }

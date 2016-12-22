@@ -19,7 +19,7 @@ namespace ImTheWorkerNow
             Thing target,
             string title,
             Action action,
-            MenuOptionPriority priority = MenuOptionPriority.Medium,
+            MenuOptionPriority priority = MenuOptionPriority.Default,
             Action mouseoverGuiAction = null,
             Thing revalidateClickTarget = null,
             float extraPartWidth = 0,
@@ -29,11 +29,11 @@ namespace ImTheWorkerNow
             Action handler = action;
             if (action != null && !pawn.CanReserve(target, 1))
             {
-                Pawn reserver = Find.Reservations.FirstReserverOf(target, pawn.Faction, true);
+                Pawn reserver = pawn.Map.reservationManager.FirstReserverOf(target, pawn.Faction, true);
                 title = title + " (" + "ReservedBy".Translate(new object[] { reserver.LabelShort }) + ")";
                 handler = delegate
                 {
-                    Pawn currentReserver = Find.Reservations.FirstReserverOf(target, pawn.Faction, true);
+                    Pawn currentReserver = pawn.Map.reservationManager.FirstReserverOf(target, pawn.Faction, true);
                     if (currentReserver != null && currentReserver.jobs != null)
                     {
                         try
@@ -46,7 +46,7 @@ namespace ImTheWorkerNow
                             ITWN.HorrifyingGlobalFakeryToPreventReserve = null;
                         }
                     }
-                    Pawn newReserver = Find.Reservations.FirstReserverOf(target, pawn.Faction, true);
+                    Pawn newReserver = pawn.Map.reservationManager.FirstReserverOf(target, pawn.Faction, true);
                     if (newReserver != null)
                     {
                         Log.Error(string.Format("Something went wrong, {0}/{1}/{2} is the job history, please let the developer of I'm The Worker Now know!", currentReserver, newReserver, pawn));
