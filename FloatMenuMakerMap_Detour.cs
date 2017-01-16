@@ -711,14 +711,24 @@ namespace ImTheWorkerNow
                                 if (workGiver_Scanner.PotentialWorkThingRequest.Accepts(current2) || (workGiver_Scanner.PotentialWorkThingsGlobal(pawn) != null && workGiver_Scanner.PotentialWorkThingsGlobal(pawn).Contains(current2)))
                                 {
                                     Job job;
-                                    if (!workGiver_Scanner.HasJobOnThingForced(pawn, current2))
+                                    try
                                     {
-                                        job = null;
+                                        ITWN.HorrifyingGlobalFakeryToAllowReserve = current2;
+                                        if (!workGiver_Scanner.HasJobOnThingForced(pawn, current2))
+                                        {
+                                            Log.Warning(string.Format("    hege"));
+                                            job = null;
+                                        }
+                                        else
+                                        {
+                                            job = workGiver_Scanner.JobOnThingForced(pawn, current2);
+                                        }
                                     }
-                                    else
+                                    finally
                                     {
-                                        job = workGiver_Scanner.JobOnThingForced(pawn, current2);
+                                        ITWN.HorrifyingGlobalFakeryToAllowReserve = null;
                                     }
+                                    
                                     if (job == null)
                                     {
                                         if (JobFailReason.HaveReason)
