@@ -716,7 +716,6 @@ namespace ImTheWorkerNow
                                         ITWN.HorrifyingGlobalFakeryToAllowReserve = current2;
                                         if (!workGiver_Scanner.HasJobOnThingForced(pawn, current2))
                                         {
-                                            Log.Warning(string.Format("    hege"));
                                             job = null;
                                         }
                                         else
