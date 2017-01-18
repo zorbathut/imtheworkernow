@@ -30,32 +30,42 @@ namespace ImTheWorkerNow
             if (action != null && !pawn.CanReserve(target, 1))
             {
                 Pawn reserver = pawn.Map.reservationManager.FirstReserverOf(target, pawn.Faction, true);
-                title = title + " (" + "ReservedBy".Translate(new object[] { reserver.LabelShort }) + ")";
-                handler = delegate
+                if (reserver == null)
                 {
-                    Pawn currentReserver = pawn.Map.reservationManager.FirstReserverOf(target, pawn.Faction, true);
-                    if (currentReserver != null && currentReserver.jobs != null)
+                    // We can't reserve this for some reason, but we also can't kick the current reserver off, so . . . sucks to be you, I guess?
+                    Log.Error(string.Format("Inconsistent reservation info for object {0}; {1} can't reserve it, but nobody else seems to be reserving it (confusing). May be a bug with Hospitality, may not be. Punting on the entire issue; please report to the developer of I'm The Worker Now. Thanks!", target, pawn));
+                    return;
+                }
+                else
+                {
+                    title = title + " (" + "ReservedBy".Translate(new object[] { reserver.LabelShort }) + ")";
+                    handler = delegate
                     {
-                        try
+                        Pawn currentReserver = pawn.Map.reservationManager.FirstReserverOf(target, pawn.Faction, true);
+                        if (currentReserver != null && currentReserver.jobs != null)
                         {
-                            ITWN.HorrifyingGlobalFakeryToPreventReserve = target;
-                            currentReserver.jobs.EndCurrentJob(JobCondition.InterruptForced);
+                            try
+                            {
+                                ITWN.HorrifyingGlobalFakeryToPreventReserve = target;
+                                currentReserver.jobs.EndCurrentJob(JobCondition.InterruptForced);
+                            }
+                            finally
+                            {
+                                ITWN.HorrifyingGlobalFakeryToPreventReserve = null;
+                            }
                         }
-                        finally
+                        Pawn newReserver = pawn.Map.reservationManager.FirstReserverOf(target, pawn.Faction, true);
+                        if (newReserver != null)
                         {
-                            ITWN.HorrifyingGlobalFakeryToPreventReserve = null;
+                            Log.Error(string.Format("Something went wrong taking over the job {0} on object {1}! Old reserver was {2}, current reserver is {3} (doing job {5}), intended reserver is {4}. {4} will probably not do the job. We apologize for this inconvenience. Please report to the developer of I'm The Worker Now. Thanks!", workType, target, currentReserver, newReserver, pawn, currentReserver.CurJob));
+                            return;
                         }
-                    }
-                    Pawn newReserver = pawn.Map.reservationManager.FirstReserverOf(target, pawn.Faction, true);
-                    if (newReserver != null)
-                    {
-                        Log.Error(string.Format("Something went wrong, {0}/{1}/{2} is the job history, please let the developer of I'm The Worker Now know!", currentReserver, newReserver, pawn));
-                    }
-                    else
-                    {
-                        action();
-                    }
-                };
+                        else
+                        {
+                            action();
+                        }
+                    };
+                }
             }
 
             if (workType != null && pawn.workSettings.GetPriority(workType) == 0)
